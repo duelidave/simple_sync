@@ -1,0 +1,57 @@
+openapi: 3.0.0
+info:
+  title: Sync Request API
+  version: 1.0.0
+paths:
+  /sync:
+    post:
+      summary: Sync a directory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncRequest'
+      responses:
+        '200':
+          description: Sync request successful
+        '400':
+          description: Bad request
+components:
+  schemas:
+    SyncRequest:
+      type: object
+      required:
+        - rootDir
+        - fileNodes
+      properties:
+        rootDir:
+          type: string
+          description: The root directory to sync
+        fileNodes:
+          type: array
+          description: The list of file nodes to sync
+          items:
+            $ref: '#/components/schemas/FileNode'
+    FileNode:
+      type: object
+      required:
+        - name
+        - isDir
+        - data
+      properties:
+        name:
+          type: string
+          description: The name of the file or directory
+        isDir:
+          type: boolean
+          description: Whether the node is a directory
+        children:
+          type: array
+          description: The list of child nodes
+          items:
+            $ref: '#/components/schemas/FileNode'
+        data:
+          type: string
+          format: binary
+          description: The binary data of the file, if applicable
