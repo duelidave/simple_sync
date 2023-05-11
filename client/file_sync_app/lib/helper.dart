@@ -15,7 +15,7 @@ class FileSystemHelper {
     for (FileSystemEntity entity in entities) {
       if (entity is File) {
         String fileName = entity.path.split('/').last;
-        int fileSize = await entity.length();
+        // int fileSize = await entity.length();
 
         List<int> fileBytes = await entity.readAsBytes();
         Digest hashSum = sha256.convert(fileBytes);
@@ -41,14 +41,17 @@ class FileSystemHelper {
   }
 
   void sendData(Map<String, dynamic> data) async {
-    WebSocket ws = await WebSocket.connect(serverUrl);
-    ws.add(json.encode(data));
-    ws.close();
+    try {
+      WebSocket ws = await WebSocket.connect(serverUrl);
+      ws.add(json.encode(data));
+      ws.close();
+    } catch (e) {
+      return Future.error(e);
+    }
   }
 
   Future<void> sendDirectoryData(Directory directory) async {
     Map<String, dynamic> directoryData = await directoryToJson(directory);
-    sendData(directoryData);
+    return sendData(directoryData);
   }
 }
-

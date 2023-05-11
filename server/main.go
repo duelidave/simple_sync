@@ -47,7 +47,11 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 		}
 
 		fmt.Println("Received file system tree data:")
-		fmt.Printf("%+v\n", treeData)
+		indentedJSON, err := json.MarshalIndent(treeData, "", "  ")
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(string(indentedJSON))
 	}
 }
 
@@ -60,4 +64,3 @@ func main() {
 		log.Fatal("ListenAndServe:", err)
 	}
 }
-
